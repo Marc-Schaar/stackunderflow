@@ -1,5 +1,6 @@
 from rest_framework import permissions
 
+
 class IsOwnerOrAdmin(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
@@ -7,7 +8,8 @@ class IsOwnerOrAdmin(permissions.BasePermission):
             return True
 
         return obj.user == request.user or request.user.is_staff
-    
+
+
 class CustomQuestionPermission(permissions.BasePermission):
     """
     Custom permission to allow:
@@ -20,7 +22,7 @@ class CustomQuestionPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        elif request.method == 'POST':
+        elif request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
             return request.user.is_authenticated
         return False
 
