@@ -22,11 +22,14 @@ class CustomQuestionPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        elif request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
+        elif request.method == 'POST':
             return request.user.is_authenticated
         return False
 
     def has_object_permission(self, request, view, obj):
+        print("DEBUG: user", request.user)
+        print("DEBUG: obj.author", getattr(obj, "author", None))
+        print("DEBUG: method", request.method)
         if request.method in permissions.SAFE_METHODS:
             return True
         elif request.method in ['PUT', 'PATCH']:

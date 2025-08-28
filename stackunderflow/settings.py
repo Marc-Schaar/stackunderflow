@@ -130,7 +130,7 @@ REST_FRAMEWORK = {
     ],
 
 
-    'DEFAULT_PERMISSON_CLASSES': [
-        'rest_framework.authentication.AllowAny',
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
     ],
 }
