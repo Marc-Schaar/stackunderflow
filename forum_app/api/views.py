@@ -1,7 +1,10 @@
-from rest_framework import viewsets, generics, permissions
-from forum_app.models import Like, Question, Answer
-from .serializers import QuestionSerializer, AnswerSerializer, LikeSerializer
-from .permissions import IsOwnerOrAdmin, CustomQuestionPermission
+from rest_framework import generics, permissions, viewsets
+
+from forum_app.models import Answer, Like, Question
+
+from .permissions import CustomQuestionPermission, IsOwnerOrAdmin
+from .serializers import AnswerSerializer, LikeSerializer, QuestionSerializer
+
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
@@ -11,6 +14,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+
 class AnswerListCreateView(generics.ListCreateAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
@@ -18,6 +22,7 @@ class AnswerListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
 
 class AnswerDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Answer.objects.all()
