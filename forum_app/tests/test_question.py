@@ -126,6 +126,3 @@ class QuestionTests(BaseAPITestCase):
         response = self.staff_client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-        # self.assertEqual(response.data, expected_data)
-        # self.assertDictEqual(response.data, expected_data)
-        # self.assertContains(response, 'title')
