@@ -16,6 +16,7 @@ class LikeSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         question = data['question']
 
+
         if Like.objects.filter(user=user, question=question).exists():
             raise serializers.ValidationError("You have already liked this question.")
 

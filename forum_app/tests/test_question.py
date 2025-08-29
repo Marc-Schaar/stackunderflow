@@ -1,35 +1,13 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 
-
-from forum_app.models import User, Question
 from forum_app.api.serializers import QuestionSerializer
+from forum_app.tests.base import BaseAPITestCase
 
 
-class QuestionTests(APITestCase):
+class QuestionTests(BaseAPITestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass', is_staff=False)
-        self.user_other = User.objects.create_user(username='testuserother', password='testpass')
-        self.staff = User.objects.create_user(username="staff", password="pass", is_staff=True)
-
-        self.question = Question.objects.create(title='Test Question', content='This is a test question.', author=self.user, category='frontend')
-
-        self.token_user = Token.objects.create(user=self.user)
-        self.token_user_other = Token.objects.create(user=self.user_other)
-        self.token_staff = Token.objects.create(user=self.staff)
-
-        self.user_client = APIClient()
-        self.user_client.force_authenticate(user=self.user)
-        self.user_client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user.key)
-
-        self.user_client_other = APIClient()
-        self.user_client_other.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_other.key)
-
-        self.staff_client = APIClient()
-        self.staff_client.credentials(HTTP_AUTHORIZATION="Token " + self.token_staff.key)
-
+        super().setUp()
 
 
     def test_list_post_question(self):
@@ -42,6 +20,9 @@ class QuestionTests(APITestCase):
         }
         response = self.user_client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.user_client.post(url, data={"title":""}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         self.user_client.logout()
 
@@ -71,9 +52,6 @@ class QuestionTests(APITestCase):
         }
 
         response = self.user_client.patch(url, data, format='json')
-        print("status:", response.status_code)
-        print("data:", response.data)
-        print("content:", response.content)
         self.question.refresh_from_db()
         expected_data = QuestionSerializer(self.question).data
         self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -28,7 +28,7 @@ class AnswerDetailView(generics.RetrieveUpdateDestroyAPIView):
 class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
-    permission_classes = [IsOwnerOrAdmin]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
