@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
     "rest_framework",
     "rest_framework.authtoken",
     "forum_app",
@@ -134,6 +135,10 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.AllowAny"
         ],
 
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
+
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle'
@@ -150,5 +155,5 @@ REST_FRAMEWORK = {
         'question-patch': '2/day',
         'question-delete': '2/day',
         'question-options': '4/day',
-    }
+    }   
 }
