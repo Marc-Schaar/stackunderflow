@@ -33,9 +33,11 @@ class AnswerListCreateView(generics.ListCreateAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    filter_backends= [DjangoFilterBackend,filters.SearchFilter]
-    filterset_fields = ['author__username', 'content',]
-    search_fields = ['content', 'author__username']
+    filter_backends= [DjangoFilterBackend,filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['author__username']
+    search_fields = ['content']
+    ordering_fields = ['author__username', 'content']
+    ordering= ['content']
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
