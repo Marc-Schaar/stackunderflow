@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions, viewsets, filters
 from rest_framework.throttling import ScopedRateThrottle
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 
 from forum_app.models import Answer, Like, Question
 
@@ -32,6 +32,14 @@ class LargeResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
     page_query_param = 'p' # Kann man umbenennen
+
+
+class CustomLimitOffSetPagination(LimitOffsetPagination):
+    default_limit = 10
+    limit_query_param = 'limit'  # Kann man umbenennen
+    offset_query_param = 'offset'  # Kann man umbenennen
+    max_limit = 50
+
 
 
 
@@ -79,7 +87,7 @@ class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
-    pagination_class = LargeResultsSetPagination
+    pagination_class= CustomLimitOffSetPagination
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
