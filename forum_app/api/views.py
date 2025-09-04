@@ -1,5 +1,6 @@
 from rest_framework import generics, permissions, viewsets, filters
 from rest_framework.throttling import ScopedRateThrottle
+from rest_framework.pagination import PageNumberPagination
 
 from forum_app.models import Answer, Like, Question
 
@@ -26,6 +27,12 @@ class QuestionViewSet(viewsets.ModelViewSet):
         
     #     if self.action =='create':
     #         return [QuestionPostThrottle()]
+class LargeResultsSetPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+    page_query_param = 'p' # Kann man umbenennen
+
 
 
 
@@ -59,7 +66,6 @@ class AnswerListCreateView(generics.ListCreateAPIView):
     
 
 
-
         
 
 
@@ -73,6 +79,7 @@ class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAdmin]
+    pagination_class = LargeResultsSetPagination
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
