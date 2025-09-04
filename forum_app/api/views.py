@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions, viewsets
+from rest_framework import generics, permissions, viewsets, filters
 from rest_framework.throttling import ScopedRateThrottle
 
 from forum_app.models import Answer, Like, Question
@@ -33,8 +33,9 @@ class AnswerListCreateView(generics.ListCreateAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    filter_backends= [DjangoFilterBackend]
+    filter_backends= [DjangoFilterBackend,filters.SearchFilter]
     filterset_fields = ['author__username', 'content',]
+    search_fields = ['content', 'author__username']
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
